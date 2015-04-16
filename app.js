@@ -4,6 +4,18 @@ var app = express();
 var client = redis.createClient();
 
 
+if (process.env.REDISTOGO_URL) {
+	// inside if statement
+var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+var client = require("redis").createClient(rtg.port, rtg.hostname);
+
+redis.auth(rtg.auth.split(":")[1]);
+    // TODO: redistogo connection
+} else {
+    var redis = require("redis").createClient();
+}
+
+
 // lpush adds one item to the list
 
 app.get("/", function(req, res){
@@ -34,4 +46,4 @@ app.get("/most-recent", function(req, res){
 	});
 });
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
